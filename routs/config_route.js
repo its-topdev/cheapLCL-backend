@@ -12,7 +12,6 @@ const chargeTypeR = require("./charge_type");
 const countryR = require("./country");
 const shipperR = require("./shipper");
 const carrierR = require("./carrier");
-const healthR = require("./health");
 
 exports.routeInit = (app) => {
   app.use("/", indexR);
@@ -27,7 +26,6 @@ exports.routeInit = (app) => {
   app.use("/country", countryR);
   app.use("/shipper", shipperR);
   app.use("/carrier", carrierR);
-  app.use("/health", healthR);
 
   app.use((err, req, res, next) => {
     console.log(

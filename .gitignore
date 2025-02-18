@@ -2,4 +2,3 @@ node_modules
 
 # debug file
 .vscode/launch.json
-.vercel
