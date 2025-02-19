@@ -18,15 +18,12 @@ require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 //     console.error(err);
 //   });
 
-// const { routeInit } = require("./routs/config_route");
+const { routeInit } = require("./routs/config_route");
 const port = process.env.port || 3001;
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
-//   routeInit(app);
+routeInit(app);
 const server = http.createServer(app);
 server.listen(port, () => console.log("Server running on port " + port));
