@@ -10,7 +10,7 @@ const indexR = require("./index");
 // const chargeR = require("./charge");
 // const chargeTypeR = require("./charge_type");
 // const countryR = require("./country");
-// const shipperR = require("./shipper");
+const shipperR = require("./shipper");
 // const carrierR = require("./carrier");
 
 exports.routeInit = (app) => {
@@ -24,7 +24,7 @@ exports.routeInit = (app) => {
   // app.use("/charge", chargeR);
   // app.use("/charge-type", chargeTypeR);
   // app.use("/country", countryR);
-  // app.use("/shipper", shipperR);
+  app.use("/shipper", shipperR);
   // app.use("/carrier", carrierR);
 
   app.use((err, req, res, next) => {
