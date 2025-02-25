@@ -2,7 +2,7 @@ require("express-async-errors");
 
 const indexR = require("./index");
 // const generalR = require("./general");
-// const userR = require("./user");
+const userR = require("./user");
 // const portR = require("./port");
 // const priceR = require("./price");
 // const bookRequestR = require("./book_request");
@@ -16,7 +16,7 @@ const shipperR = require("./shipper");
 exports.routeInit = (app) => {
   app.use("/", indexR);
   // app.use("/general", generalR);
-  // app.use("/user", userR);
+  app.use("/user", userR);
   // app.use("/port", portR);
   // app.use("/price", priceR);
   // app.use("/vessel", vesselR);
