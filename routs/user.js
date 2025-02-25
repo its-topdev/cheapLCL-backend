@@ -240,36 +240,36 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// router.post("/login", async (req, res) => {
-//   const { email, password } = req.body;
-//   let u = await user.findOne({
-//     where: {
-//       email: email,
-//     },
-//   });
-//   if (!u) {
-//     return res.status(401).json({ clientErrMsg: "User not found" });
-//   } else {
-//     let validPassword = await bcrypt.compare(password, u.password);
-//     if (!validPassword) {
-//       return res
-//         .status(401)
-//         .json({ clientErrMsg: "User and password not match" });
-//     }
-//     if (u.user_status != user_status.CONFIRMED) {
-//       return res.status(401).json({
-//         clientErrMsg:
-//           "You will be able to login the system after the administrator approves your user.",
-//       });
-//     }
-//     let token = await u.createToken();
-//     return res.json({
-//       status: true,
-//       data: { name: u.name, role: u.role, token: token },
-//     });
-//     // return res.json({ name: u.name, role: u.role, token: token });
-//   }
-// });
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  let u = await user.findOne({
+    where: {
+      email: email,
+    },
+  });
+  if (!u) {
+    return res.status(401).json({ clientErrMsg: "User not found" });
+  } else {
+    let validPassword = await bcrypt.compare(password, u.password);
+    if (!validPassword) {
+      return res
+        .status(401)
+        .json({ clientErrMsg: "User and password not match" });
+    }
+    if (u.user_status != user_status.CONFIRMED) {
+      return res.status(401).json({
+        clientErrMsg:
+          "You will be able to login the system after the administrator approves your user.",
+      });
+    }
+    let token = await u.createToken();
+    return res.json({
+      status: true,
+      data: { name: u.name, role: u.role, token: token },
+    });
+    // return res.json({ name: u.name, role: u.role, token: token });
+  }
+});
 
 // router.get('/list', auth(LEVELS.admin), async (req, res) => {
 // router.get("/list", async (req, res) => {
