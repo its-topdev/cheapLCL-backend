@@ -12,12 +12,12 @@ exports.auth = (requiredRole) => {
         });
       }
       let decodeToken = jwt.verify(token, config.tokenSecret);
-      const userRole = decodeToken.role; // Assuming you have stored the user's role in the request object
+      const userRole = decodeToken.role;
       if (LEVELS[userRole] >= requiredRole) {
         req.userId = decodeToken.id;
         req.body.updated_by_id = decodeToken.id;
         req.body.updatedById = decodeToken.id;
-        next(); // User has the required role, continue to the next middleware or route handler
+        next();
       } else {
         res.status(403).json({ clientErrMsg: "Unauthorized" });
       }

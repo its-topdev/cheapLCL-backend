@@ -1,4 +1,4 @@
-const { charge, chargeType } = require("../models"); // import models
+const { discount } = require("../models");
 const express = require("express");
 const router = express.Router();
 const { auth } = require("../middlewares/auth");
@@ -7,15 +7,15 @@ const { LEVELS } = require("../constants/user-role");
 router.post("/:id/edit", auth(LEVELS.admin), async (req, res) => {
   try {
     const id = req.params.id;
-    const { name, price, type } = req.body;
+    const { startDate, endDate, fixedDiscount, weeklyDiscount } = req.body;
 
-    const chargeObj = await charge.update(
+    const discountObj = await discount.update(
       {
-        name: name,
-        price: price,
-        typeId: type,
-        createdById: req.userId,
-        updatedById: req.userId,
+        startDate: startDate,
+        endDate: endDate,
+        fixedDiscount: fixedDiscount,
+        weeklyDiscount: weeklyDiscount,
+        updatedAt: new Date(),
       },
       {
         where: {
@@ -26,20 +26,20 @@ router.post("/:id/edit", auth(LEVELS.admin), async (req, res) => {
 
     return res.json({
       status: true,
-      data: chargeObj,
+      data: discountObj,
     });
   } catch (error) {
     console.log(error);
     return res
       .status(500)
-      .send({ status: false, clientErrMsg: "updating charge failed" });
+      .send({ status: false, clientErrMsg: "updating discount failed" });
   }
 });
 
 router.post("/:id/delete", auth(LEVELS.admin), async (req, res) => {
   try {
     const id = req.params.id;
-    const c = await charge.destroy({
+    const d = await discount.destroy({
       where: {
         id: id,
       },
@@ -47,27 +47,28 @@ router.post("/:id/delete", auth(LEVELS.admin), async (req, res) => {
 
     return res.json({
       status: true,
-      data: c,
+      data: d,
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).send({ status: false, error: "charge" });
+    return res.status(500).send({ status: false, error: "discount" });
   }
 });
 
 router.post("/create", auth(LEVELS.admin), async (req, res) => {
   try {
-    const { name, price, type } = req.body;
-    const chargeObj = await charge.create({
-      name,
-      price,
-      typeId: type,
-      created_by_id: req.userId,
-      updated_by_id: req.userId,
+    const { startDate, endDate, fixedDiscount, weeklyDiscount } = req.body;
+    const discountObj = await discount.create({
+      startDate,
+      endDate,
+      fixedDiscount,
+      weeklyDiscount,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
     return res.json({
       status: true,
-      data: chargeObj,
+      data: discountObj,
     });
   } catch (err) {
     return res.json({
@@ -82,33 +83,23 @@ router.get("/list", auth(LEVELS.user), async (req, res) => {
     const pageSize = parseInt(req.query.pageSize);
 
     if (!page || !pageSize) {
-      const list = await charge.findAll({
-        include: [
-          {
-            model: chargeType,
-          },
-        ],
+      const list = await discount.findAll({
         order: [["id", "DESC"]],
       });
       return res.json({
         status: true,
-        data: { charges: list },
+        data: { discounts: list },
       });
     } else {
-      const count = await charge.count({});
-      const list = await charge.findAll({
+      const count = await discount.count({});
+      const list = await discount.findAll({
         offset: (page - 1) * pageSize,
         limit: pageSize,
-        include: [
-          {
-            model: chargeType,
-          },
-        ],
         order: [["id", "DESC"]],
       });
       return res.json({
         status: true,
-        data: { charges: list, totalCount: count },
+        data: { discounts: list, totalCount: count },
       });
     }
   } catch (err) {
