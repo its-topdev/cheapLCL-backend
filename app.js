@@ -19,6 +19,7 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "x-api-key"],
   credentials: true,
+  maxAge: 86400,
 };
 
 sequelize
@@ -36,6 +37,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors(corsOptions));
+app.options("*", cors());
 routeInit(app);
 const server = http.createServer(app);
 server.listen(port, () => console.log("Server running on port " + port));
