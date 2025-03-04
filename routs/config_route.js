@@ -13,6 +13,8 @@ const countryR = require("./country");
 const shipperR = require("./shipper");
 const carrierR = require("./carrier");
 const discountR = require("./discount");
+const pricesR = require("./prices");
+// const updatedPricesR = require("./updated_prices");
 
 exports.routeInit = (app) => {
   app.use("/", indexR);
@@ -28,6 +30,8 @@ exports.routeInit = (app) => {
   app.use("/shipper", shipperR);
   app.use("/carrier", carrierR);
   app.use("/discount", discountR);
+  app.use("/prices", pricesR);
+  // app.use("/updated-prices", updatedPricesR);
 
   app.use((err, req, res, next) => {
     console.log(
