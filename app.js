@@ -9,35 +9,81 @@ const cors = require("cors");
 require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 const { sequelize } = require("./models");
 
+const app = express();
+
+const allowedOrigins = [
+  "https://cheap-lc-l-frontend.vercel.app",
+  "http://localhost:3000",
+  "https://staging-cheaplcl-backend.onrender.com", // Add your backend URL
+];
+
 const corsOptions = {
-  origin: [
-    "https://cheap-lc-l-frontend.vercel.app",
-    "http://cheap-lc-l-frontend.vercel.app",
-    // Add your local development URL if needed, e.g.:
-    "http://localhost:5173",
-  ],
+  origin: function (origin, callback) {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log("Blocked origin:", origin);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "x-api-key"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "x-api-key",
+  ],
   credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
   maxAge: 86400,
 };
 
-sequelize
-  .sync({ force: false })
-  .then(() => {
-    console.log("DB connected");
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+app.use(cors(corsOptions));
+5;
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-api-key"
+  );
+  next();
+});
 
-const { routeInit } = require("./routs/config_route");
-const port = process.env.port || 3001;
-const app = express();
+app.options("*", cors(corsOptions));
+
+app.use((err, req, res, next) => {
+  if (err.message === "Not allowed by CORS") {
+    console.error("CORS Error:", {
+      origin: req.headers.origin,
+      method: req.method,
+      path: req.path,
+    });
+    return res.status(403).json({
+      status: false,
+      error: "CORS Error: Origin not allowed",
+      allowedOrigins,
+    });
+  }
+  next(err);
+});
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cors(corsOptions));
-app.options("*", cors());
 routeInit(app);
+
+const port = process.env.PORT || 3001; // Note: Changed 'port' to 'PORT' for consistency
 const server = http.createServer(app);
 server.listen(port, () => console.log("Server running on port " + port));
