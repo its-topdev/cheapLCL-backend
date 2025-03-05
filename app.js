@@ -7,14 +7,16 @@ const http = require("http");
 const path = require("path");
 const cors = require("cors");
 require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
+const { routeInit } = require("./routs/config_route");
 const { sequelize } = require("./models");
 
 const app = express();
+const port = process.env.PORT || 3001;
 
 const allowedOrigins = [
   "https://cheap-lc-l-frontend.vercel.app",
   "http://localhost:3000",
-  "https://staging-cheaplcl-backend.onrender.com", // Add your backend URL
+  "https://staging-cheaplcl-backend.onrender.com",
 ];
 
 const corsOptions = {
@@ -44,7 +46,9 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-5;
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -64,6 +68,8 @@ app.use((req, res, next) => {
 
 app.options("*", cors(corsOptions));
 
+routeInit(app);
+
 app.use((err, req, res, next) => {
   if (err.message === "Not allowed by CORS") {
     console.error("CORS Error:", {
@@ -80,10 +86,14 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
-routeInit(app);
+sequelize
+  .sync({ force: false })
+  .then(() => {
+    console.log("DB connected");
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
-const port = process.env.PORT || 3001; // Note: Changed 'port' to 'PORT' for consistency
 const server = http.createServer(app);
 server.listen(port, () => console.log("Server running on port " + port));
