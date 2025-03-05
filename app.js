@@ -15,7 +15,7 @@ const port = process.env.PORT || 3001;
 
 const allowedOrigins = [
   "https://cheap-lc-l-frontend.vercel.app",
-  "http://localhost:3000",
+  "http://localhost:5173",
   "https://staging-cheaplcl-backend.onrender.com",
 ];
 
