@@ -7,12 +7,13 @@ const { LEVELS } = require("../constants/user-role");
 router.post("/:id/edit", auth(LEVELS.admin), async (req, res) => {
   try {
     const id = req.params.id;
-    const { name, price, type } = req.body;
+    const { name, price, type, minPrice } = req.body;
 
     const chargeObj = await charge.update(
       {
-        name: name,
-        price: price,
+        name,
+        price,
+        minPrice,
         typeId: type,
         createdById: req.userId,
         updatedById: req.userId,
@@ -57,11 +58,12 @@ router.post("/:id/delete", auth(LEVELS.admin), async (req, res) => {
 
 router.post("/create", auth(LEVELS.admin), async (req, res) => {
   try {
-    const { name, price, type } = req.body;
+    const { name, price, type, minPrice } = req.body;
     const chargeObj = await charge.create({
       name,
       price,
       typeId: type,
+      minPrice,
       created_by_id: req.userId,
       updated_by_id: req.userId,
     });
