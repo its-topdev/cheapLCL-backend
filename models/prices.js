@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       prices.belongsTo(models.port, { foreignKey: 'pol', as: 'polObj' });
       prices.belongsTo(models.port, { foreignKey: 'pod', as: 'podObj' });
+      prices.belongsTo(models.pricesApplicableTimeframes, {
+        foreignKey: 'applicableTimeId',
+        as: 'applicableTimeframes',
+      });
     }
   }
 

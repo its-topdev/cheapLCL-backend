@@ -1,5 +1,5 @@
 const express = require('express');
-const { prices, port } = require('../models');
+const { prices, port, pricesApplicableTimeframes } = require('../models');
 
 const router = express.Router();
 const { auth } = require('../middlewares/auth');
@@ -8,12 +8,10 @@ const { LEVELS } = require('../constants/user-role');
 router.post('/:id/edit', auth(LEVELS.admin), async (req, res) => {
   try {
     const { id } = req.params;
-    const { pol, pod, price } = req.body;
+    const { price } = req.body;
 
     const priceObj = await prices.update(
       {
-        pol,
-        pod,
         price,
         updatedAt: new Date(),
       },
@@ -92,12 +90,30 @@ router.get('/list', auth(LEVELS.user), async (req, res) => {
             model: port,
             as: 'podObj',
           },
+          {
+            model: pricesApplicableTimeframes,
+            as: 'applicableTimeframes',
+          },
         ],
         order: [['id', 'DESC']],
       });
+
+      const priceList = list.map((price) => {
+        return {
+          id: price.id,
+          pol: price.pol,
+          pod: price.pod,
+          price: price.price,
+          polName: price.polObj.name,
+          podName: price.podObj.name,
+          validFrom: price.applicableTimeframes.prices_start_date,
+          validTo: price.applicableTimeframes.prices_end_date,
+        };
+      });
+
       return res.json({
         status: true,
-        data: { prices: list },
+        data: { prices: priceList },
       });
     }
     const count = await prices.count({});
@@ -113,12 +129,30 @@ router.get('/list', auth(LEVELS.user), async (req, res) => {
           model: port,
           as: 'podObj',
         },
+        {
+          model: pricesApplicableTimeframes,
+          as: 'applicableTimeframes',
+        },
       ],
       order: [['id', 'DESC']],
     });
+
+    const priceList = list.map((price) => {
+      return {
+        id: price.id,
+        pol: price.pol,
+        pod: price.pod,
+        price: price.price,
+        polName: price.polObj.name,
+        podName: price.podObj.name,
+        validFrom: price.applicableTimeframes.prices_start_date,
+        validTo: price.applicableTimeframes.prices_end_date,
+      };
+    });
+
     return res.json({
       status: true,
-      data: { prices: list, totalCount: count },
+      data: { prices: priceList, totalCount: count },
     });
   } catch (err) {
     return res.status(500).json(err);

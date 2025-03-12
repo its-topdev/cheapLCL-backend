@@ -37,11 +37,7 @@ exports.routeInit = (app) => {
     console.log(
       `Global Error:${
         req.url
-      } ${
-        err.stack
-      }\n Body: ${
-        JSON.stringify(req.body)
-      )}\n Params: ${JSON.stringify(req.params)}`,
+      } ${err.stack}\n Body: ${JSON.stringify(req.body)}\n Params: ${JSON.stringify(req.params)}`,
     );
     return res.json({
       status: false,
