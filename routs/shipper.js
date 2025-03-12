@@ -1,10 +1,11 @@
-const { shipper, contact } = require("../models"); // import models
-const express = require("express");
+const express = require('express');
+const { shipper, contact } = require('../models');
+// import models
 const router = express.Router();
-const { auth } = require("../middlewares/auth");
-const { LEVELS } = require("../constants/user-role");
+const { auth } = require('../middlewares/auth');
+const { LEVELS } = require('../constants/user-role');
 
-router.get("/user-shippers", auth(LEVELS.user), async (req, res) => {
+router.get('/user-shippers', auth(LEVELS.user), async (req, res) => {
   try {
     const list = await shipper.findAll({
       where: {
@@ -23,7 +24,7 @@ router.get("/user-shippers", auth(LEVELS.user), async (req, res) => {
   }
 });
 
-router.post("/create", auth(LEVELS.user), async (req, res) => {
+router.post('/create', auth(LEVELS.user), async (req, res) => {
   try {
     const {
       name,
@@ -56,7 +57,7 @@ router.post("/create", auth(LEVELS.user), async (req, res) => {
         createdById: req.userId,
         updatedById: req.userId,
       });
-      contacts.forEach(function (element) {
+      contacts.forEach((element) => {
         contact.create({
           name: element.name,
           email: element.email,

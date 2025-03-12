@@ -1,19 +1,20 @@
-const express = require("express");
-const router = express.Router();
-const axios = require("axios");
+const express = require('express');
 
-router.get("/", (req, res) => {
+const router = express.Router();
+const axios = require('axios');
+
+router.get('/', (req, res) => {
   res.json({
-    msg: "from indexx !!!",
+    msg: 'from indexx !!!',
     fronUrl: process.env.FRONT_URL,
   });
 });
 module.exports = router;
 
-router.get("/webSchedule", async (req, res) => {
+router.get('/webSchedule', async (req, res) => {
   try {
     const response = await axios.get(
-      `https://csp.wships.com/wships/app/webSchedule?pol=${req.query.pol}&pod=${req.query.pod}`
+      `https://csp.wships.com/wships/app/webSchedule?pol=${req.query.pol}&pod=${req.query.pod}`,
     );
     res.json({
       status: true,
@@ -23,8 +24,8 @@ router.get("/webSchedule", async (req, res) => {
     console.error(error);
     res.status(500).json({
       status: false,
-      errorCode: "FetchError",
-      clientErrMsg: "Failed to fetch data from the third-party API",
+      errorCode: 'FetchError',
+      clientErrMsg: 'Failed to fetch data from the third-party API',
     });
   }
 });

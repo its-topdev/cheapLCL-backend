@@ -1,1 +1,1 @@
-exports.book_request_prefix = "CL";
+exports.book_request_prefix = 'CL';

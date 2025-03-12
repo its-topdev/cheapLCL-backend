@@ -7,25 +7,25 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       bookId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'book_request',
-          key: 'id'
-        }
+          key: 'id',
+        },
       },
       chargeId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'charges',
-          key: 'id'
-        }
+          key: 'id',
+        },
       },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('book_charges');
-  }
+  },
 };

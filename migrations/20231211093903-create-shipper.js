@@ -7,51 +7,51 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       userId: {
         type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' }
+        references: { model: 'users', key: 'id' },
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       countryId: {
         type: Sequelize.INTEGER,
-        references: { model: 'countries', key: 'id' }
+        references: { model: 'countries', key: 'id' },
       },
       cityId: {
         type: Sequelize.INTEGER,
-        references: { model: 'ports', key: 'id' }
+        references: { model: 'ports', key: 'id' },
       },
       zip: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       deletedAt: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       createdById: {
         type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' }
+        references: { model: 'users', key: 'id' },
       },
       updatedById: {
         type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' }
+        references: { model: 'users', key: 'id' },
       },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('shippers');
-  }
+  },
 };

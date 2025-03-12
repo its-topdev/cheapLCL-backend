@@ -4,34 +4,35 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     return Promise.all([
-      queryInterface.createTable('user_status', {
-        id: {
-          allowNull: false,
-          autoIncrement: true,
-          primaryKey: true,
-          type: Sequelize.INTEGER
-        },
-        name: {
-          type: Sequelize.STRING
-        },
-      }).then(() => {
-        queryInterface.bulkInsert('user_status', [
-          {
-            name: 'created'
+      queryInterface
+        .createTable('user_status', {
+          id: {
+            allowNull: false,
+            autoIncrement: true,
+            primaryKey: true,
+            type: Sequelize.INTEGER,
           },
-          {
-            name: 'verified'
-          }, {
-            name: 'confirmed'
-          }, {
-            name: 'rejected'
-          }
-
-        ]);
-      })
-    ])
-
-
+          name: {
+            type: Sequelize.STRING,
+          },
+        })
+        .then(() => {
+          queryInterface.bulkInsert('user_status', [
+            {
+              name: 'created',
+            },
+            {
+              name: 'verified',
+            },
+            {
+              name: 'confirmed',
+            },
+            {
+              name: 'rejected',
+            },
+          ]);
+        }),
+    ]);
   },
 
   async down(queryInterface, Sequelize) {
@@ -41,5 +42,5 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-  }
+  },
 };

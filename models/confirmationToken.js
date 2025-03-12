@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class confirmationToken extends Model {
     /**
@@ -13,14 +11,16 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  confirmationToken.init({
-    user: DataTypes.INTEGER,
-    token: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'confirmationToken',
-    tableName: 'confirmation_tokens'
-
-  });
+  confirmationToken.init(
+    {
+      user: DataTypes.INTEGER,
+      token: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: 'confirmationToken',
+      tableName: 'confirmation_tokens',
+    },
+  );
   return confirmationToken;
 };

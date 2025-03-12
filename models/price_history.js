@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class price_history extends Model {
     /**
@@ -12,22 +10,25 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       price_history.belongsTo(models.price, {
-        foreignKey: "priceId"
+        foreignKey: 'priceId',
       });
     }
   }
-  price_history.init({
-    priceFirst: DataTypes.FLOAT,
-    priceSecond: DataTypes.FLOAT,
-    priceThird: DataTypes.FLOAT,
-    priceFourth: DataTypes.FLOAT,
-    priceDate: DataTypes.FLOAT,
-    createdById: DataTypes.INTEGER,
-    updatedById: DataTypes.INTEGER,
-  }, {
-    sequelize,
-    modelName: 'price_history',
-    paranoid: true,
-  });
+  price_history.init(
+    {
+      priceFirst: DataTypes.FLOAT,
+      priceSecond: DataTypes.FLOAT,
+      priceThird: DataTypes.FLOAT,
+      priceFourth: DataTypes.FLOAT,
+      priceDate: DataTypes.FLOAT,
+      createdById: DataTypes.INTEGER,
+      updatedById: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: 'price_history',
+      paranoid: true,
+    },
+  );
   return price_history;
 };

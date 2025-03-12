@@ -1,27 +1,28 @@
-const { discount } = require("../models");
-const express = require("express");
-const router = express.Router();
-const { auth } = require("../middlewares/auth");
-const { LEVELS } = require("../constants/user-role");
+const express = require('express');
+const { discount } = require('../models');
 
-router.post("/:id/edit", auth(LEVELS.admin), async (req, res) => {
+const router = express.Router();
+const { auth } = require('../middlewares/auth');
+const { LEVELS } = require('../constants/user-role');
+
+router.post('/:id/edit', auth(LEVELS.admin), async (req, res) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     const { startDate, endDate, fixedDiscount, weeklyDiscount } = req.body;
 
     const discountObj = await discount.update(
       {
-        startDate: startDate,
-        endDate: endDate,
-        fixedDiscount: fixedDiscount,
-        weeklyDiscount: weeklyDiscount,
+        startDate,
+        endDate,
+        fixedDiscount,
+        weeklyDiscount,
         updatedAt: new Date(),
       },
       {
         where: {
-          id: id,
+          id,
         },
-      }
+      },
     );
 
     return res.json({
@@ -32,16 +33,16 @@ router.post("/:id/edit", auth(LEVELS.admin), async (req, res) => {
     console.log(error);
     return res
       .status(500)
-      .send({ status: false, clientErrMsg: "updating discount failed" });
+      .send({ status: false, clientErrMsg: 'updating discount failed' });
   }
 });
 
-router.post("/:id/delete", auth(LEVELS.admin), async (req, res) => {
+router.post('/:id/delete', auth(LEVELS.admin), async (req, res) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     const d = await discount.destroy({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -51,11 +52,11 @@ router.post("/:id/delete", auth(LEVELS.admin), async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).send({ status: false, error: "discount" });
+    return res.status(500).send({ status: false, error: 'discount' });
   }
 });
 
-router.post("/create", auth(LEVELS.admin), async (req, res) => {
+router.post('/create', auth(LEVELS.admin), async (req, res) => {
   try {
     const { startDate, endDate, fixedDiscount, weeklyDiscount } = req.body;
     const discountObj = await discount.create({
@@ -77,31 +78,30 @@ router.post("/create", auth(LEVELS.admin), async (req, res) => {
   }
 });
 
-router.get("/list", auth(LEVELS.user), async (req, res) => {
+router.get('/list', auth(LEVELS.user), async (req, res) => {
   try {
     const page = parseInt(req.query.page);
     const pageSize = parseInt(req.query.pageSize);
 
     if (!page || !pageSize) {
       const list = await discount.findAll({
-        order: [["id", "DESC"]],
+        order: [['id', 'DESC']],
       });
       return res.json({
         status: true,
         data: { discounts: list },
       });
-    } else {
-      const count = await discount.count({});
-      const list = await discount.findAll({
-        offset: (page - 1) * pageSize,
-        limit: pageSize,
-        order: [["id", "DESC"]],
-      });
-      return res.json({
-        status: true,
-        data: { discounts: list, totalCount: count },
-      });
     }
+    const count = await discount.count({});
+    const list = await discount.findAll({
+      offset: (page - 1) * pageSize,
+      limit: pageSize,
+      order: [['id', 'DESC']],
+    });
+    return res.json({
+      status: true,
+      data: { discounts: list, totalCount: count },
+    });
   } catch (err) {
     return res.status(500).json(err);
   }

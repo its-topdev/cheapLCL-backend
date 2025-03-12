@@ -1,8 +1,9 @@
 if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = "development";
+  process.env.NODE_ENV = 'development';
 }
 
-require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
+
 const env = process.env.NODE_ENV;
 const dbConfig = JSON.parse(process.env.DB_CONFIG);
 

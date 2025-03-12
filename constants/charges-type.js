@@ -1,4 +1,4 @@
 exports.charge_type = {
-  "FIXED": 1,
-  "CALCULATED": 2,
-  }
+  FIXED: 1,
+  CALCULATED: 2,
+};

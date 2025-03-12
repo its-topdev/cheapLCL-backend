@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class bookCarge extends Model {
     /**
@@ -11,16 +9,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       bookCarge.belongsTo(models.bookRequest, { foreignKey: 'bookId' });
-      bookCarge.belongsTo(models.charge, { foreignKey: 'chargeId' });    }
+      bookCarge.belongsTo(models.charge, { foreignKey: 'chargeId' });
+    }
   }
-  bookCarge.init({
-    bookId: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'bookCarge',
-    timestamps: false,
-    modelName: 'bookCharge',
-    tableName: 'book_charges'
-  });
+  bookCarge.init(
+    {
+      bookId: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: 'bookCarge',
+      timestamps: false,
+      modelName: 'bookCharge',
+      tableName: 'book_charges',
+    },
+  );
   return bookCarge;
 };

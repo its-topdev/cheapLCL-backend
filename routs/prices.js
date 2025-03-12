@@ -1,26 +1,27 @@
-const { prices, port } = require("../models");
-const express = require("express");
-const router = express.Router();
-const { auth } = require("../middlewares/auth");
-const { LEVELS } = require("../constants/user-role");
+const express = require('express');
+const { prices, port } = require('../models');
 
-router.post("/:id/edit", auth(LEVELS.admin), async (req, res) => {
+const router = express.Router();
+const { auth } = require('../middlewares/auth');
+const { LEVELS } = require('../constants/user-role');
+
+router.post('/:id/edit', auth(LEVELS.admin), async (req, res) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     const { pol, pod, price } = req.body;
 
     const priceObj = await prices.update(
       {
-        pol: pol,
-        pod: pod,
-        price: price,
+        pol,
+        pod,
+        price,
         updatedAt: new Date(),
       },
       {
         where: {
-          id: id,
+          id,
         },
-      }
+      },
     );
 
     return res.json({
@@ -31,16 +32,16 @@ router.post("/:id/edit", auth(LEVELS.admin), async (req, res) => {
     console.log(error);
     return res
       .status(500)
-      .send({ status: false, clientErrMsg: "updating price failed" });
+      .send({ status: false, clientErrMsg: 'updating price failed' });
   }
 });
 
-router.post("/:id/delete", auth(LEVELS.admin), async (req, res) => {
+router.post('/:id/delete', auth(LEVELS.admin), async (req, res) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     const priceObj = await prices.destroy({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -50,11 +51,11 @@ router.post("/:id/delete", auth(LEVELS.admin), async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).send({ status: false, error: "price" });
+    return res.status(500).send({ status: false, error: 'price' });
   }
 });
 
-router.post("/create", auth(LEVELS.admin), async (req, res) => {
+router.post('/create', auth(LEVELS.admin), async (req, res) => {
   try {
     const { pol, pod, price } = req.body;
     const priceObj = await prices.create({
@@ -75,7 +76,7 @@ router.post("/create", auth(LEVELS.admin), async (req, res) => {
   }
 });
 
-router.get("/list", auth(LEVELS.user), async (req, res) => {
+router.get('/list', auth(LEVELS.user), async (req, res) => {
   try {
     const page = parseInt(req.query.page);
     const pageSize = parseInt(req.query.pageSize);
@@ -85,41 +86,40 @@ router.get("/list", auth(LEVELS.user), async (req, res) => {
         include: [
           {
             model: port,
-            as: "polObj",
+            as: 'polObj',
           },
           {
             model: port,
-            as: "podObj",
+            as: 'podObj',
           },
         ],
-        order: [["id", "DESC"]],
+        order: [['id', 'DESC']],
       });
       return res.json({
         status: true,
         data: { prices: list },
       });
-    } else {
-      const count = await prices.count({});
-      const list = await prices.findAll({
-        offset: (page - 1) * pageSize,
-        limit: pageSize,
-        include: [
-          {
-            model: port,
-            as: "polObj",
-          },
-          {
-            model: port,
-            as: "podObj",
-          },
-        ],
-        order: [["id", "DESC"]],
-      });
-      return res.json({
-        status: true,
-        data: { prices: list, totalCount: count },
-      });
     }
+    const count = await prices.count({});
+    const list = await prices.findAll({
+      offset: (page - 1) * pageSize,
+      limit: pageSize,
+      include: [
+        {
+          model: port,
+          as: 'polObj',
+        },
+        {
+          model: port,
+          as: 'podObj',
+        },
+      ],
+      order: [['id', 'DESC']],
+    });
+    return res.json({
+      status: true,
+      data: { prices: list, totalCount: count },
+    });
   } catch (err) {
     return res.status(500).json(err);
   }

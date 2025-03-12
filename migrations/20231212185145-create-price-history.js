@@ -7,46 +7,46 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       priceId: {
         type: Sequelize.INTEGER,
-        references: { model: 'prices', key: 'id' }
+        references: { model: 'prices', key: 'id' },
       },
       priceFirst: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       priceSecond: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       priceThird: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       priceDate: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       deletedAt: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       createdById: {
         type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' }
+        references: { model: 'users', key: 'id' },
       },
       updatedById: {
         type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' }
+        references: { model: 'users', key: 'id' },
       },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('price_histories');
-  }
+  },
 };

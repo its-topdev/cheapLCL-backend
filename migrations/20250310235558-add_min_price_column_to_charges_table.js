@@ -1,16 +1,16 @@
-"use strict";
+'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.addColumn("charges", "minPrice", {
+    await queryInterface.addColumn('charges', 'minPrice', {
       type: Sequelize.FLOAT,
       allowNull: true,
-      after: "price",
+      after: 'price',
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn("charges", "minPrice");
+    await queryInterface.removeColumn('charges', 'minPrice');
   },
 };

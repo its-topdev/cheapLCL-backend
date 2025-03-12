@@ -7,45 +7,44 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       userId: {
         type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' }
-
+        references: { model: 'users', key: 'id' },
       },
       priceId: {
         type: Sequelize.INTEGER,
-        references: { model: 'prices', key: 'id' }
+        references: { model: 'prices', key: 'id' },
       },
       basePrice: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
-      'weight': {
-        type: Sequelize.INTEGER
+      weight: {
+        type: Sequelize.INTEGER,
       },
       cbm: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       createdById: {
         type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' }
+        references: { model: 'users', key: 'id' },
       },
       updatedById: {
         type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' }
+        references: { model: 'users', key: 'id' },
       },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('bookRequest');
-  }
+  },
 };

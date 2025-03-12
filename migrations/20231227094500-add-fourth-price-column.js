@@ -4,15 +4,17 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     return Promise.all([
-      queryInterface.addColumn('prices', 'priceFourth', {
-        type: Sequelize.INTEGER,
-        after: "priceThird"
-      }).then(() => {
-        queryInterface.addColumn('price_histories', 'priceFourth', {
+      queryInterface
+        .addColumn('prices', 'priceFourth', {
           type: Sequelize.INTEGER,
-          after: "priceThird"
+          after: 'priceThird',
         })
-      })
+        .then(() => {
+          queryInterface.addColumn('price_histories', 'priceFourth', {
+            type: Sequelize.INTEGER,
+            after: 'priceThird',
+          });
+        }),
     ]);
   },
 
@@ -23,5 +25,5 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-  }
+  },
 };

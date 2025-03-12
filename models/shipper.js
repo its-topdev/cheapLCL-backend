@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class shipper extends Model {
     /**
@@ -13,19 +11,22 @@ module.exports = (sequelize, DataTypes) => {
       shipper.hasMany(models.contact);
     }
   }
-  shipper.init({
-    userId: DataTypes.INTEGER,
-    name: DataTypes.STRING,
-    address: DataTypes.STRING,
-    countryId: DataTypes.INTEGER,
-    cityId: DataTypes.INTEGER,
-    zip: DataTypes.STRING,
-    createdById: DataTypes.INTEGER,
-    updatedById: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'shipper',
-    paranoid: true
-  });
+  shipper.init(
+    {
+      userId: DataTypes.INTEGER,
+      name: DataTypes.STRING,
+      address: DataTypes.STRING,
+      countryId: DataTypes.INTEGER,
+      cityId: DataTypes.INTEGER,
+      zip: DataTypes.STRING,
+      createdById: DataTypes.INTEGER,
+      updatedById: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: 'shipper',
+      paranoid: true,
+    },
+  );
   return shipper;
 };

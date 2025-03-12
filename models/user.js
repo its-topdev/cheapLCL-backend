@@ -1,9 +1,6 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-const jwt =require("jsonwebtoken");
-const {config} = require("../config/secret");
+const { Model } = require('sequelize');
+const jwt = require('jsonwebtoken');
+const { config } = require('../config/secret');
 
 module.exports = (sequelize, DataTypes) => {
   class user extends Model {
@@ -14,36 +11,44 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      user.belongsTo(models.userStatus, { foreignKey: 'user_status', });
+      user.belongsTo(models.userStatus, { foreignKey: 'user_status' });
     }
   }
-  user.prototype.createToken = async function (expireIn = "180mins") {
-    let token = jwt.sign({id: this.id,role: this.role},config.tokenSecret,{expiresIn: expireIn});
+  user.prototype.createToken = async function (expireIn = '180mins') {
+    const token = jwt.sign(
+      { id: this.id, role: this.role },
+      config.tokenSecret,
+      {
+        expiresIn: expireIn,
+      },
+    );
     return token;
-  }
+  };
 
- user.isEmailExist = async function (email) { 
-    let userObj = await user.findOne({
+  user.isEmailExist = async function (email) {
+    const userObj = await user.findOne({
       where: {
-        email: email
-      }
+        email,
+      },
     });
     return userObj;
-   };
+  };
 
-
-  user.init({
-    name: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    company: DataTypes.STRING,
-    phone: DataTypes.STRING,
-    role: DataTypes.STRING,
-    user_status: DataTypes.INTEGER,
-  }, {
-    sequelize,
-    modelName: 'user',
-    paranoid: true,
-  });
+  user.init(
+    {
+      name: DataTypes.STRING,
+      email: DataTypes.STRING,
+      password: DataTypes.STRING,
+      company: DataTypes.STRING,
+      phone: DataTypes.STRING,
+      role: DataTypes.STRING,
+      user_status: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: 'user',
+      paranoid: true,
+    },
+  );
   return user;
 };
