@@ -22,7 +22,8 @@
   "scripts": {
     "app": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "start-dev": "set NODE_ENV=development&&node app.js",
+    "dev": "nodemon app.js",
+    "start-dev": "set NODE_ENV=development&&nodemon app.js",
     "start-prod": "pm2 start ecosystem.config.js --env production",
     "start-staging": "pm2 start ecosystem.config.js --env staging",
     "migrate:development": "set NODE_ENV=development&& sequelize-cli db:migrate",
@@ -40,6 +41,7 @@
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.3",
+    "nodemon": "^3.1.9",
     "prettier": "^3.5.3"
   }
 }
