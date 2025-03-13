@@ -8,12 +8,12 @@ const { LEVELS } = require('../constants/user-role');
 router.post('/:id/edit', auth(LEVELS.admin), async (req, res) => {
   try {
     const { id } = req.params;
-    const { startDate, endDate, fixedDiscount, weeklyDiscount } = req.body;
+    const { fixedDiscount, weeklyDiscount } = req.body;
 
     const discountObj = await discount.update(
       {
-        startDate,
-        endDate,
+        // startDate,
+        // endDate,
         fixedDiscount,
         weeklyDiscount,
         updatedAt: new Date(),
@@ -58,10 +58,10 @@ router.post('/:id/delete', auth(LEVELS.admin), async (req, res) => {
 
 router.post('/create', auth(LEVELS.admin), async (req, res) => {
   try {
-    const { startDate, endDate, fixedDiscount, weeklyDiscount } = req.body;
+    const { fixedDiscount, weeklyDiscount } = req.body;
     const discountObj = await discount.create({
-      startDate,
-      endDate,
+      // startDate,
+      // endDate,
       fixedDiscount,
       weeklyDiscount,
       createdAt: new Date(),
