@@ -324,4 +324,50 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
   }
 });
 
+router.post('/update-by-email', auth(LEVELS.admin), async (req, res) => {
+  try {
+    const { prices, validity } = req.body;
+
+    const timeframes = await pricesApplicableTimeframes.create({
+      prices_start_date: validity.from,
+      prices_end_date: validity.end,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+
+    const createdPrices = await Promise.all(
+      prices.map(async (price) => {
+        const polName = await port.findOne({
+          where: {
+            name: price.pol,
+          },
+        });
+
+        const podName = await port.findOne({
+          where: {
+            name: price.pod,
+          },
+        });
+
+        return await prices.create({
+          pol: polName.id,
+          pod: podName.id,
+          price: price.price,
+          applicableTimeId: timeframes.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      }),
+    );
+
+    return res.json({
+      status: true,
+      data: createdPrices,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ status: false, error: err.message });
+  }
+});
+
 module.exports = router;
