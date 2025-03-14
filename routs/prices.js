@@ -63,21 +63,32 @@ router.post('/:id/delete', auth(LEVELS.admin), async (req, res) => {
 
 router.post('/create', auth(LEVELS.admin), async (req, res) => {
   try {
-    const { pol, pod, price } = req.body;
+    const { startDate, endDate, podObj, polObj, price } = req.body;
+
+    const timeframes = await pricesApplicableTimeframes.create({
+      prices_start_date: startDate,
+      prices_end_date: endDate,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+
     const priceObj = await prices.create({
-      pol,
-      pod,
+      pol: polObj.id,
+      pod: podObj.id,
       price,
+      applicableTimeId: timeframes.id,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
+
     return res.json({
       status: true,
       data: priceObj,
     });
   } catch (err) {
-    return res.json({
+    return res.status(500).json({
       status: false,
+      error: err.message,
     });
   }
 });
