@@ -1,12 +1,12 @@
 const express = require('express');
+const axios = require('axios');
+const { Op } = require('sequelize');
 const {
   prices,
   port,
   pricesApplicableTimeframes,
   discount,
 } = require('../models');
-const axios = require('axios');
-const { Op } = require('sequelize');
 
 const router = express.Router();
 const { auth } = require('../middlewares/auth');
@@ -35,7 +35,6 @@ router.post('/:id/edit', auth(LEVELS.admin), async (req, res) => {
       data: priceObj,
     });
   } catch (error) {
-    console.log(error);
     return res
       .status(500)
       .send({ status: false, clientErrMsg: 'updating price failed' });
@@ -56,7 +55,6 @@ router.post('/:id/delete', auth(LEVELS.admin), async (req, res) => {
       data: priceObj,
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).send({ status: false, error: 'price' });
   }
 });
@@ -95,8 +93,8 @@ router.post('/create', auth(LEVELS.admin), async (req, res) => {
 
 router.get('/list', auth(LEVELS.user), async (req, res) => {
   try {
-    const page = parseInt(req.query.page);
-    const pageSize = parseInt(req.query.pageSize);
+    const page = parseInt(req.query.page, 10);
+    const pageSize = parseInt(req.query.pageSize, 10);
 
     if (!page || !pageSize) {
       const list = await prices.findAll({
@@ -117,18 +115,16 @@ router.get('/list', auth(LEVELS.user), async (req, res) => {
         order: [['id', 'DESC']],
       });
 
-      const priceList = list.map((price) => {
-        return {
-          id: price.id,
-          pol: price.pol,
-          pod: price.pod,
-          price: price.price,
-          polName: price.polObj.name,
-          podName: price.podObj.name,
-          validFrom: price.applicableTimeframes.prices_start_date,
-          validTo: price.applicableTimeframes.prices_end_date,
-        };
-      });
+      const priceList = list.map((price) => ({
+        id: price.id,
+        pol: price.pol,
+        pod: price.pod,
+        price: price.price,
+        polName: price.polObj.name,
+        podName: price.podObj.name,
+        validFrom: price.applicableTimeframes.prices_start_date,
+        validTo: price.applicableTimeframes.prices_end_date,
+      }));
 
       return res.json({
         status: true,
@@ -156,18 +152,16 @@ router.get('/list', auth(LEVELS.user), async (req, res) => {
       order: [['id', 'DESC']],
     });
 
-    const priceList = list.map((price) => {
-      return {
-        id: price.id,
-        pol: price.pol,
-        pod: price.pod,
-        price: price.price,
-        polName: price.polObj.name,
-        podName: price.podObj.name,
-        validFrom: price.applicableTimeframes.prices_start_date,
-        validTo: price.applicableTimeframes.prices_end_date,
-      };
-    });
+    const priceList = list.map((price) => ({
+      id: price.id,
+      pol: price.pol,
+      pod: price.pod,
+      price: price.price,
+      polName: price.polObj.name,
+      podName: price.podObj.name,
+      validFrom: price.applicableTimeframes.prices_start_date,
+      validTo: price.applicableTimeframes.prices_end_date,
+    }));
 
     return res.json({
       status: true,
@@ -199,8 +193,8 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
     }
     const availableTimeframes = await prices.findAll({
       where: {
-        pol: pol,
-        pod: pod,
+        pol,
+        pod,
       },
       attributes: ['applicableTimeId'],
       group: ['applicableTimeId'],
@@ -222,8 +216,6 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
       (price) => price.applicableTimeId,
     );
 
-    console.log(availableTimeframeIds, 'availableTimeframeIds');
-
     const allTimeframes = await pricesApplicableTimeframes.findAll({
       where: {
         id: {
@@ -244,8 +236,8 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
 
     const allPrices = await prices.findAll({
       where: {
-        pol: pol,
-        pod: pod,
+        pol,
+        pod,
         applicableTimeId: {
           [Op.in]: availableTimeframeIds,
         },
@@ -277,11 +269,17 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
           );
 
           let finalPrice = 0;
+          let priceData;
 
-          if (excludeDiscountPorts.some((port) => port.id === pol)) {
-            finalPrice = priceData.price;
+          if (excludeDiscountPorts.some((portItem) => portItem.id === pol)) {
+            priceData = allPrices.find(
+              (p) => p.applicableTimeId === allTimeframes[0].id,
+            );
+            if (priceData) {
+              finalPrice = priceData.price;
+            }
           } else if (applicableTimeframe) {
-            const priceData = allPrices.find(
+            priceData = allPrices.find(
               (p) => p.applicableTimeId === applicableTimeframe.id,
             );
 
@@ -291,7 +289,7 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
           } else {
             const mostRecentTimeframe = allTimeframes[0];
             if (mostRecentTimeframe) {
-              const priceData = allPrices.find(
+              priceData = allPrices.find(
                 (p) => p.applicableTimeId === mostRecentTimeframe.id,
               );
 
@@ -315,7 +313,7 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
             vesselName: voyage?.vessel,
             voyage: voyage?.voyage,
             arrivalDate: voyage?.arrivalDate,
-            amount: parseInt(amount),
+            amount: parseInt(amount, 10),
             price: finalPrice,
             amountSymbol: weightAmountKg > weightAmountCbm ? 'MT' : 'CBM',
             amountTitle: 'Weight',
@@ -337,7 +335,7 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
 
 router.post('/update-by-email', auth(LEVELS.admin), async (req, res) => {
   try {
-    const { prices, validity } = req.body;
+    const { prices: pricesList, validity } = req.body;
 
     const timeframes = await pricesApplicableTimeframes.create({
       prices_start_date: validity.from,
@@ -347,7 +345,7 @@ router.post('/update-by-email', auth(LEVELS.admin), async (req, res) => {
     });
 
     const createdPrices = await Promise.all(
-      prices.map(async (price) => {
+      pricesList.map(async (price) => {
         const polName = await port.findOne({
           where: {
             name: price.pol,
@@ -376,7 +374,6 @@ router.post('/update-by-email', auth(LEVELS.admin), async (req, res) => {
       data: createdPrices,
     });
   } catch (err) {
-    console.log(err);
     return res.status(500).json({ status: false, error: err.message });
   }
 });
