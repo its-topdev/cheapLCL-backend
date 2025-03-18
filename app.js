@@ -15,6 +15,7 @@ const port = process.env.PORT || 3001;
 
 const allowedOrigins = [
   'https://cheap-lc-l-frontend.vercel.app',
+  'http://cheap-lc-l-frontend.vercel.app',
   'http://localhost:5173',
   'https://staging-cheaplcl-backend.onrender.com',
 ];
@@ -26,11 +27,10 @@ const corsOptions = {
     }
 
     if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log('Blocked origin:', origin);
-      callback(new Error('Not allowed by CORS'));
+      return callback(null, true);
     }
+    console.log('Blocked origin:', origin);
+    return callback(new Error('Not allowed by CORS'));
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
@@ -83,7 +83,7 @@ app.use((err, req, res, next) => {
       allowedOrigins,
     });
   }
-  next(err);
+  return next(err);
 });
 
 sequelize
