@@ -71,8 +71,8 @@ router.post('/create', auth(LEVELS.admin), async (req, res) => {
     });
 
     const priceObj = await prices.create({
-      pol: polObj.id,
-      pod: podObj.id,
+      pol: polObj.value,
+      pod: podObj.value,
       price,
       applicableTimeId: timeframes.id,
       createdAt: new Date(),
