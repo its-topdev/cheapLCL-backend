@@ -272,7 +272,11 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
           let finalPrice = 0;
           let priceData;
 
-          if (excludeDiscountPorts.some((portItem) => portItem.id === pol)) {
+          if (
+            excludeDiscountPorts.some(
+              (portItem) => portItem.id.toString() === pol,
+            )
+          ) {
             priceData = allPrices.find(
               (p) => p.applicableTimeId === allTimeframes[0].id,
             );
