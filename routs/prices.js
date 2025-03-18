@@ -161,6 +161,7 @@ router.get('/list', auth(LEVELS.user), async (req, res) => {
       podName: price.podObj.name,
       validFrom: price.applicableTimeframes.prices_start_date,
       validTo: price.applicableTimeframes.prices_end_date,
+      updatedAt: price.applicableTimeframes.updated_at,
     }));
 
     return res.json({
