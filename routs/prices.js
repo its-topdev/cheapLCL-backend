@@ -152,6 +152,7 @@ router.get('/list', auth(LEVELS.user), async (req, res) => {
       order: [['id', 'DESC']],
     });
 
+
     const priceList = list.map((price) => ({
       id: price.id,
       pol: price.pol,
@@ -163,6 +164,7 @@ router.get('/list', auth(LEVELS.user), async (req, res) => {
       validTo: price.applicableTimeframes.prices_end_date,
       updatedAt: price.applicableTimeframes.updated_at,
     }));
+    console.log(priceList);
 
     return res.json({
       status: true,
@@ -302,7 +304,7 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
                 const weeksDiff = Math.ceil(
                   (departureDate -
                     new Date(mostRecentTimeframe.prices_end_date)) /
-                    (7 * 24 * 60 * 60 * 1000),
+                  (7 * 24 * 60 * 60 * 1000),
                 );
 
                 finalPrice =

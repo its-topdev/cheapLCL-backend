@@ -5,5 +5,5 @@ exports.parameters = {
   resetPass: 'reset-password',
   managersEmailsTo: ['roi@wlog-group.com'],
   // "managersEmailsTo": ["dvora@wlog-group.com", "tova@wlog-group.com", "roi@wlog-group.com"],
-  developersEmailsTo: ['neil.zhao.adams@gmail.com'],
+  developersEmailsTo: ['deep.sea.00129@gmail.com'],
 };

@@ -246,6 +246,7 @@ router.post('/login', async (req, res) => {
       email,
     },
   });
+
   if (!u) {
     return res.status(401).json({ clientErrMsg: 'User not found' });
   }
@@ -264,12 +265,12 @@ router.post('/login', async (req, res) => {
   const token = await u.createToken();
   return res.json({
     status: true,
-    data: { name: u.name, role: u.role, token },
+    data: { name: u.name, role: u.role, user_id: u.id, token },
   });
   // return res.json({ name: u.name, role: u.role, token: token });
 });
 
-router.get('/list', auth(LEVELS.admin), async (req, res) => {
+router.get('/list', async (req, res) => {
   const page = parseInt(req.query.page);
   const pageSize = parseInt(req.query.pageSize);
 
@@ -381,7 +382,7 @@ router.post('/create', auth(LEVELS.admin), async (req, res) => {
     if (user.isEmailExist(email)) {
       return res.json({
         status: false,
-        clientErrMsg: 'Email allready exist',
+        clientErrMsg: 'Email already exist',
       });
     }
     return res.json({

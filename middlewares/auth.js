@@ -4,7 +4,7 @@ const { LEVELS } = require('../constants/user-role');
 
 exports.auth = (requiredRole) => (req, res, next) => {
   try {
-    const token = req.header('x-api-key');
+    const token = req.header('X-Api-Key');
     if (!token) {
       return res.status(401).json({
         msg: 'You need to send token to this endpoint url',

@@ -3,18 +3,17 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.addColumn('users', 'password', {
-      type: Sequelize.STRING,
-      after: 'email',
-    });
+    const tableDescription = await queryInterface.describeTable('users');
+    if (!tableDescription.password) {
+      return queryInterface.addColumn('users', 'password', {
+        type: Sequelize.STRING,
+        after: 'email',
+      });
+    }
+    return Promise.resolve(); // Ensure a return value
   },
 
-  async down(queryInterface, Sequelize) {
-    /**
-     * Add reverting commands here.
-     *
-     * Example:
-     * await queryInterface.dropTable('users');
-     */
+  async down(queryInterface, _Sequelize) {
+    return queryInterface.removeColumn('users', 'password');
   },
 };

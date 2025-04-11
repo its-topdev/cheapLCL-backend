@@ -25,6 +25,7 @@ router.get('/user-shippers', auth(LEVELS.user), async (req, res) => {
 });
 
 router.post('/create', auth(LEVELS.user), async (req, res) => {
+
   try {
     const {
       name,

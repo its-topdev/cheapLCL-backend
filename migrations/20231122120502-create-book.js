@@ -26,6 +26,18 @@ module.exports = {
       cbm: {
         type: Sequelize.INTEGER,
       },
+      vessel: {
+        type: Sequelize.STRING,
+      },
+      voyage: {
+        type: Sequelize.STRING,
+      },
+      pol: {
+        type: Sequelize.STRING,
+      },
+      pod: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
