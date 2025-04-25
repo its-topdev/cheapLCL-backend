@@ -25,8 +25,8 @@ sequelize = new Sequelize(
     logging: !isDevelopment
       ? false
       : (msg) => {
-          console.log(msg);
-        },
+        // console.log(msg);
+      },
   },
 );
 

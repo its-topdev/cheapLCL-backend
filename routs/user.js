@@ -362,6 +362,9 @@ router.post('/:id/delete', auth(LEVELS.admin), async (req, res) => {
 });
 
 router.post('/create', auth(LEVELS.admin), async (req, res) => {
+
+  req.body.company = req.body.company.label;
+  console.log(req.body);
   const { name, email, company, phone, role, password } = req.body;
   try {
     const hashPass = await passwordEncryption(password);
@@ -374,6 +377,7 @@ router.post('/create', auth(LEVELS.admin), async (req, res) => {
       password: hashPass,
       user_status: user_status.VERIFIED,
     });
+
     return res.json({
       status: true,
       data: userObj,

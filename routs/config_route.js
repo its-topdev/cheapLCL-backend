@@ -14,6 +14,7 @@ const shipperR = require('./shipper');
 const carrierR = require('./carrier');
 const discountR = require('./discount');
 const pricesR = require('./prices');
+const companyR = require('./company');
 // const updatedPricesR = require("./updated_prices");
 
 exports.routeInit = (app) => {
@@ -31,12 +32,12 @@ exports.routeInit = (app) => {
   app.use('/carrier', carrierR);
   app.use('/discount', discountR);
   app.use('/prices', pricesR);
+  app.use('/company', companyR);
   // app.use("/updated-prices", updatedPricesR);
 
   app.use((err, req, res, next) => {
     console.log(
-      `Global Error:${
-        req.url
+      `Global Error:${req.url
       } ${err.stack}\n Body: ${JSON.stringify(req.body)}\n Params: ${JSON.stringify(req.params)}`,
     );
     return res.json({
