@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const {
-  bookRequest, user, bookStatus, charge, prices, port
+  bookRequest, user, bookStatus, charge, prices, port, chargeType
 } = require('../models'); // import models
 const { parameters } = require('../config/params');
 const { sendEmail } = require('../services/Email');
@@ -123,7 +123,13 @@ router.get("/list", async (req, res) => {
     const pageSize = parseInt(req.query.pageSize);
     const listType = req.query.list_type || 'undefined';
     let count, list;
-
+    const charges = await charge.findAll({
+      include: [
+        {
+          model: chargeType,
+        },
+      ],
+    });
     if (listType === 'quotes') {
       const userId = req.query.user_id;
       if (!userId) {
@@ -194,7 +200,7 @@ router.get("/list", async (req, res) => {
 
     return res.json({
       status: true,
-      data: { books: list, totalCount: count },
+      data: { books: list, totalCount: count, charges },
     });
   } catch (err) {
     console.log(err);
