@@ -313,13 +313,18 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
             }
           }
 
+          const changedArrivalDate = new Date(voyage?.arrivalDate);
+          changedArrivalDate.setDate(changedArrivalDate.getDate() + 6);
+          const period = Math.ceil((changedArrivalDate - new Date(voyage?.departureDate)) / (1000 * 60 * 60 * 24));
+
           return {
             carrierName: 'WSHIPS',
             key: voyage?.vvoyage,
             departureDate: voyage?.departureDate,
             vesselName: voyage?.vessel,
             voyage: voyage?.voyage,
-            arrivalDate: voyage?.arrivalDate,
+            arrivalDate: changedArrivalDate.toISOString(),
+            period,
             amount: parseInt(amount, 10),
             price: finalPrice,
             amountSymbol: weightAmountKg > weightAmountCbm ? 'MT' : 'CBM',
