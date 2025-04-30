@@ -57,6 +57,11 @@ router.get('/list', auth(LEVELS.user), async (req, res) => {
     const filteredList = list.filter(
       (item) => item.shipperObj.userObj !== null,
     );
+    if (req.query.list_type === 'shippers') {
+      filteredList = list.filter(
+        (item) => item.shipperObj.userObj.id === req.userId,
+      );
+    }
     const shippers = filteredList.map((item) => ({
       id: item.id === null ? 0 : item.id,
       username: item.shipperObj.userObj.name,
