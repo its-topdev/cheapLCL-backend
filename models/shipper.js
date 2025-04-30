@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       shipper.hasMany(models.contact);
+      shipper.belongsTo(models.user, { foreignKey: 'userId', as: 'userObj' });
+      shipper.belongsTo(models.country, { foreignKey: 'countryId', as: 'countryObj' });
+      shipper.belongsTo(models.port, { foreignKey: 'cityId', as: 'cityObj' });
     }
   }
   shipper.init(

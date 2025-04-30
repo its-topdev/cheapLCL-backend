@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       contact.belongsTo(models.shipper, {
         foreignKey: 'shipperId',
+        as: 'shipperObj',
       });
     }
   }

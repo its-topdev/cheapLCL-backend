@@ -164,7 +164,6 @@ router.get('/list', auth(LEVELS.user), async (req, res) => {
       validTo: price.applicableTimeframes.prices_end_date,
       updatedAt: price.applicableTimeframes.updated_at,
     }));
-    console.log(priceList);
 
     return res.json({
       status: true,
