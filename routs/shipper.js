@@ -54,11 +54,9 @@ router.get('/list', auth(LEVELS.user), async (req, res) => {
       order: [['id', 'DESC']],
     });
     const total = await contact.count();
-    const filteredList = list.filter(
-      (item) => item.shipperObj.userObj !== null,
-    );
+    let filteredList = list.filter((item) => item.shipperObj.userObj !== null);
     if (req.query.list_type === 'shippers') {
-      filteredList = list.filter(
+      filteredList = filteredList.filter(
         (item) => item.shipperObj.userObj.id === req.userId,
       );
     }
@@ -99,7 +97,7 @@ router.post('/create', auth(LEVELS.user), async (req, res) => {
     const {
       name,
       address,
-      country,
+      country: countryId,
       city,
       zip,
       contactName,
@@ -111,7 +109,7 @@ router.post('/create', auth(LEVELS.user), async (req, res) => {
       userId: req.userId,
       name,
       address,
-      countryId: country,
+      countryId,
       cityId: city,
       zip,
       createdById: req.userId,
