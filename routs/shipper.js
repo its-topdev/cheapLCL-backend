@@ -23,6 +23,73 @@ router.get('/user-shippers', auth(LEVELS.user), async (req, res) => {
     });
   }
 });
+router.post('/:id/edit', auth(LEVELS.admin), async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const shipperData = req.body;
+
+    const shipperObj = await shipper.update(
+      {
+        name: shipperData.name,
+        address: shipperData.address,
+        countryId: shipperData.country,
+        cityId: shipperData.city,
+        zip: shipperData.zip,
+        updatedAt: new Date(),
+      },
+      {
+        where: {
+          id,
+        },
+      },
+    );
+    await contact.update(
+      {
+        name: shipperData.contactName,
+        email: shipperData.contactEmail,
+        phone: shipperData.contactPhone,
+        updatedAt: new Date(),
+      },
+      {
+        where: {
+          shipperId: id,
+        },
+      },
+    );
+
+    return res.json({
+      status: true,
+      data: shipperObj,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ status: false, clientErrMsg: 'updating shipper failed' });
+  }
+});
+router.post('/:id/delete', auth(LEVELS.admin), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const shipperObj = await shipper.destroy({
+      where: {
+        id,
+      },
+    });
+    await contact.destroy({
+      where: {
+        shipperId: id,
+      },
+    });
+
+    return res.json({
+      status: true,
+      data: shipperObj,
+    });
+  } catch (error) {
+    return res.status(500).send({ status: false, error: 'shipper' });
+  }
+});
 
 router.get('/list', auth(LEVELS.user), async (req, res) => {
   try {
@@ -47,20 +114,21 @@ router.get('/list', auth(LEVELS.user), async (req, res) => {
               as: 'cityObj',
             },
           ],
+          order: [['id', 'DESC']],
         },
       ],
-      offset: (page - 1) * pageSize,
-      limit: pageSize,
       order: [['id', 'DESC']],
     });
-    const total = await contact.count();
-    let filteredList = list.filter((item) => item.shipperObj.userObj !== null);
+    let filteredList = list.filter((item) => item.shipperObj !== null);
+    filteredList = filteredList.filter((item) => item.shipperObj.userObj !== null);
     if (req.query.list_type === 'shippers') {
       filteredList = filteredList.filter(
         (item) => item.shipperObj.userObj.id === req.userId,
       );
     }
-    const shippers = filteredList.map((item) => ({
+    const total = filteredList.length;
+    const offset = (page - 1) * pageSize;
+    const shippers = filteredList.slice(offset, offset + pageSize).map((item) => ({
       id: item.id === null ? 0 : item.id,
       username: item.shipperObj.userObj.name,
       usercompany: item.shipperObj.userObj.company,
