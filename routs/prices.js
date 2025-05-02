@@ -181,7 +181,6 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
     const searchDate = new Date(date);
     const startTime = searchDate.getTime();
     const endTime = new Date(date).setDate(searchDate.getDate() + 7 * weeks);
-
     let wshipsResponse;
     try {
       wshipsResponse = await axios.get(
@@ -193,6 +192,7 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
         error: `Failed to fetch Wships data ${err.message}`,
       });
     }
+
     const availableTimeframes = await prices.findAll({
       where: {
         pol,
@@ -201,19 +201,16 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
       attributes: ['applicableTimeId'],
       group: ['applicableTimeId'],
     });
-
     const polName = await port.findOne({
       where: {
         id: pol,
       },
     });
-
     const podName = await port.findOne({
       where: {
         id: pod,
       },
     });
-
     const availableTimeframeIds = availableTimeframes.map(
       (price) => price.applicableTimeId,
     );
@@ -227,15 +224,15 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
       order: [['updated_at', 'DESC']],
     });
 
-    const latestDiscount = await discount.findOne({
-      order: [['updatedAt', 'DESC']],
-    });
+    const discountObj = await discount.findAll();
+    // console.log(discountObj);
 
-    const { fixedDiscount, weeklyDiscount } = latestDiscount || {
-      fixedDiscount: 0,
-      weeklyDiscount: 0,
-    };
 
+    // const { fixedDiscount, weeklyDiscount } = latestDiscount || {
+    //   fixedDiscount: 0,
+    //   weeklyDiscount: 0,
+    // };
+    let fixedDiscount = 0;
     const allPrices = await prices.findAll({
       where: {
         pol,
@@ -253,13 +250,23 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
       order: [['updatedAt', 'DESC']],
     });
 
+
     const filteredVoyages = await Promise.all(
       wshipsResponse.data.voyages
         .filter((voyage) => {
           const departureTime = new Date(voyage?.departureDate)?.getTime();
           return departureTime >= startTime && departureTime <= endTime;
         })
-        .map(async (voyage) => {
+        .map(async (voyage, index) => {
+          if (index === 0) {
+            fixedDiscount = discountObj[0].discount;
+          } else if (index === 1) {
+            fixedDiscount = discountObj[1].discount;
+          } else if (index === 2) {
+            fixedDiscount = discountObj[2].discount;
+          } else {
+            fixedDiscount = discountObj[3].discount;
+          }
           const departureDate = new Date(voyage.departureDate);
           const amount =
             weightAmountKg > weightAmountCbm ? weightAmountKg : weightAmountCbm;
@@ -298,17 +305,15 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
               priceData = allPrices.find(
                 (p) => p.applicableTimeId === mostRecentTimeframe.id,
               );
+              finalPrice = priceData.price - fixedDiscount;
+              //   if (priceData) {
+              //     const weeksDiff = Math.ceil(
+              //       (departureDate -
+              //         new Date(mostRecentTimeframe.prices_end_date)) /
+              //         (7 * 24 * 60 * 60 * 1000),
+              //     );
 
-              if (priceData) {
-                const weeksDiff = Math.ceil(
-                  (departureDate -
-                    new Date(mostRecentTimeframe.prices_end_date)) /
-                  (7 * 24 * 60 * 60 * 1000),
-                );
-
-                finalPrice =
-                  priceData.price - fixedDiscount - weeklyDiscount * weeksDiff;
-              }
+              // }
             }
           }
 
