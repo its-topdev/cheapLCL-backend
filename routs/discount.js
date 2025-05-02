@@ -9,7 +9,7 @@ router.post('/:id/edit', auth(LEVELS.admin), async (req, res) => {
   try {
     const { id } = req.params;
     const { price } = req.body;
-
+    // console.log(price);
     const discountObj = await discount.update(
       {
         discount: price,
