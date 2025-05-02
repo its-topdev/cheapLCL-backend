@@ -193,6 +193,8 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
       });
     }
 
+
+
     const availableTimeframes = await prices.findAll({
       where: {
         pol,
@@ -250,12 +252,21 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
       order: [['updatedAt', 'DESC']],
     });
 
+    const isValidPortServices = (voyageSchedule) => {
+      return voyageSchedule.every((entry) => {
+        const prefix = entry.service_dsc?.slice(0, 3);
+        return prefix === 'FMX' || prefix === 'IMX';
+      });
+    };
 
     const filteredVoyages = await Promise.all(
       wshipsResponse.data.voyages
         .filter((voyage) => {
           const departureTime = new Date(voyage?.departureDate)?.getTime();
           return departureTime >= startTime && departureTime <= endTime;
+        })
+        .filter((voyage) => {
+          return isValidPortServices(voyage.ports);
         })
         .map(async (voyage, index) => {
           if (index === 0) {
@@ -352,14 +363,12 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
 router.post('/update-by-email', auth(LEVELS.admin), async (req, res) => {
   try {
     const { prices: pricesList, validity } = req.body;
-
     const timeframes = await pricesApplicableTimeframes.create({
       prices_start_date: validity.from,
       prices_end_date: validity.end,
       created_at: new Date(),
       updated_at: new Date(),
     });
-
     const createdPrices = await Promise.all(
       pricesList.map(async (price) => {
         const polName = await port.findOne({
