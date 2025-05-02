@@ -10,10 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   discount.init(
     {
-      startDate: DataTypes.DATE,
-      endDate: DataTypes.DATE,
-      fixedDiscount: DataTypes.FLOAT,
-      weeklyDiscount: DataTypes.FLOAT,
+      discount: DataTypes.FLOAT,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },
