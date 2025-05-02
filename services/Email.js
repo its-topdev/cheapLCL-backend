@@ -7,6 +7,7 @@ exports.sendEmail = (tempalte, to, subject, params) => {
     if (process.env.NODE_ENV != 'production') {
       to = parameters.developersEmailsTo.map((item) => ({ email: item }));
     }
+    to = parameters.managersEmailsTo.map((item) => ({ email: item }));
     mandrill(
       '/messages/send-template',
       {

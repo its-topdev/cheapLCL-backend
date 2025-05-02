@@ -98,6 +98,8 @@ router.post('/create', auth(LEVELS.user), async (req, res) => {
       { name: 'POD', content: book.pod },
       { name: 'USER_NAME', content: bookUser.name },
     ];
+    // console.log(paramsCustomer);
+
     const toCustomer = [{ email: bookUser.email }];
     const responseCustomer = sendEmail(
       templates.new_book_customer,
