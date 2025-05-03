@@ -70,7 +70,7 @@ router.post('/create', auth(LEVELS.user), async (req, res) => {
     });
 
     // send email to referant
-    const email = await newBook.getEmailByPol();
+    // const email = await newBook.getEmailByPol();
     const params = [
       { name: 'BOOK_NUMBER', content: newBook.id },
       { name: 'BOOK_POL', content: book.pol },
@@ -80,7 +80,8 @@ router.post('/create', auth(LEVELS.user), async (req, res) => {
       { name: 'USER_PHONE', content: bookUser.phone },
     ];
 
-    const to = [{ email }];
+    const to = parameters.managersEmailsTo;
+    // const to = [{ email }];
     // const to = bookUser.email;
     const response = sendEmail(
       templates.new_book_referant,
