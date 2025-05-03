@@ -80,7 +80,7 @@ router.post('/create', auth(LEVELS.user), async (req, res) => {
       { name: 'USER_PHONE', content: bookUser.phone },
     ];
 
-    const to = parameters.managersEmailsTo;
+    const to = parameters.managersEmailsTo.map((item) => ({ email: item }));
     // const to = [{ email }];
     // const to = bookUser.email;
     const response = sendEmail(
