@@ -66,6 +66,8 @@ router.post('/:id/update-status', auth(LEVELS.admin), async (req, res) => {
         { name: 'USERNAME', content: userObj.email },
         { name: 'NAME', content: userObj.name },
       ];
+
+
       const { email } = userObj;
       const to = [{ email }];
       await sendEmail(
