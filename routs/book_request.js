@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const {
-  bookRequest, user, bookStatus, charge, prices, port, chargeType
+  bookRequest, user, bookStatus, charge, prices, port, chargeType, shipper, contact, country
 } = require('../models'); // import models
 const { parameters } = require('../config/params');
 const { sendEmail } = require('../services/Email');
@@ -168,6 +168,23 @@ router.get("/list", async (req, res) => {
           {
             model: bookStatus,
           },
+          {
+            model: shipper,
+            include: [
+              {
+                model: contact,
+                as: 'contactObj',
+              },
+              {
+                model: country,
+                as: 'countryObj',
+              },
+              {
+                model: port,
+                as: 'cityObj',
+              },
+            ],
+          },
         ],
         order: [['id', 'DESC']],
       });
@@ -195,6 +212,23 @@ router.get("/list", async (req, res) => {
           },
           {
             model: bookStatus,
+          },
+          {
+            model: shipper,
+            include: [
+              {
+                model: contact,
+                as: 'contactObj',
+              },
+              {
+                model: country,
+                as: 'countryObj',
+              },
+              {
+                model: port,
+                as: 'cityObj',
+              },
+            ],
           },
         ],
         order: [['id', 'DESC']],

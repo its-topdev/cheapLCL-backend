@@ -9,6 +9,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      shipperId: {
+        type: Sequelize.INTEGER,
+        references: { model: 'shippers', key: 'id' },
+      },
       userId: {
         type: Sequelize.INTEGER,
         references: { model: 'users', key: 'id' },

@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       shipper.belongsTo(models.user, { foreignKey: 'userId', as: 'userObj' });
       shipper.belongsTo(models.country, { foreignKey: 'countryId', as: 'countryObj' });
       shipper.belongsTo(models.port, { foreignKey: 'cityId', as: 'cityObj' });
+      shipper.hasMany(models.contact, { foreignKey: 'shipperId', as: 'contactObj' });
     }
   }
   shipper.init(

@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       bookRequest.belongsTo(models.prices, {
         foreignKey: "priceId"
       });
+      bookRequest.belongsTo(models.shipper, {
+        foreignKey: "shipperId"
+      });
       bookRequest.belongsTo(models.user, { foreignKey: 'userId', });
       bookRequest.belongsTo(models.bookStatus, { foreignKey: 'bookStatusId', });
       bookRequest.belongsToMany(models.charge, {
@@ -72,6 +75,7 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   bookRequest.init({
+    shipperId: DataTypes.INTEGER,
     priceId: DataTypes.INTEGER,
     userId: DataTypes.INTEGER,
     basePrice: DataTypes.FLOAT,
