@@ -83,12 +83,14 @@ router.post('/create', auth(LEVELS.user), async (req, res) => {
     const to = parameters.managersEmailsTo.map((item) => ({ email: item }));
     // const to = [{ email }];
     // const to = bookUser.email;
-    const response = sendEmail(
-      templates.new_book_referant,
-      to,
-      'NEW BOOKING REQUEST',
-      params,
-    );
+    to.map((item) => {
+      sendEmail(
+        templates.new_book_referant,
+        item.email,
+        'NEW BOOKING REQUEST',
+        params,
+      );
+    });
 
     // send email to customer
     const weightOrCbm =
