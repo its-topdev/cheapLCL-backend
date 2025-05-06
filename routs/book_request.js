@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const {
-  bookRequest, user, bookStatus, charge, prices, port, chargeType, shipper, contact, country
+  bookRequest, user, bookStatus, charge, prices, port, chargeType, shipper, contact, country, company
 } = require('../models'); // import models
 const { parameters } = require('../config/params');
 const { sendEmail } = require('../services/Email');
@@ -20,6 +20,7 @@ router.post('/create', auth(LEVELS.user), async (req, res) => {
   book.bookStatusId = book_status.CREATED;
   book.vessel = book.vessel;
   book.voyage = book.voyage;
+
   try {
     // Retrieve pol and pod IDs from the port table
     const pol_Obj = await port.findOne({
@@ -63,11 +64,40 @@ router.post('/create', auth(LEVELS.user), async (req, res) => {
       newBook.addCharges(list);
     });
     const bookUser = await user.findOne({
-      attributes: ['name', 'email', 'phone'],
+      attributes: ['name', 'email', 'phone', 'company'],
       where: {
         id: newBook.userId,
       },
     });
+
+    const shipperObj = await shipper.findOne({
+      attributes: ['name', 'address', 'countryId', 'cityId', 'zip'],
+      where: {
+        id: book.shipperId,
+      },
+      include: [
+        {
+          model: contact,
+          as: 'contactObj',
+        },
+        {
+          model: country,
+          as: 'countryObj',
+        },
+        {
+          model: port,
+          as: 'cityObj',
+        },
+      ],
+    });
+    // const companyId = await company.findOne({
+    //   attributes: ['client_id'],
+    //   where: {
+    //     id: book.userId,
+    //   },
+    // });
+
+    // console.log(companyId);
 
     // send email to referant
     // const email = await newBook.getEmailByPol();
@@ -78,6 +108,19 @@ router.post('/create', auth(LEVELS.user), async (req, res) => {
       { name: 'USER_NAME', content: bookUser.name },
       { name: 'USER_EMAIL', content: bookUser.email },
       { name: 'USER_PHONE', content: bookUser.phone },
+      { name: 'TOTAL_PRICE', content: book.totalPrice },
+      { name: 'START_DATE', content: book.startDate },
+      { name: 'END_DATE', content: book.endDate },
+      { name: 'COMPANY_ID', content: bookUser.company },
+      { name: 'SHIPPER_NAME', content: shipperObj.name },
+      { name: 'SHIPPER_ADDRESS', content: shipperObj.address },
+      { name: 'SHIPPER_COUNTRY', content: shipperObj.countryObj.name },
+      { name: 'SHIPPER_CITY', content: shipperObj.cityObj.name },
+      { name: 'SHIPPER_ZIP', content: shipperObj.zip },
+      { name: 'SHIPPER_CONTACT_NAME', content: shipperObj.contactObj[0].name },
+      { name: 'SHIPPER_CONTACT_NUM', content: shipperObj.contactObj[0].phone },
+      { name: 'SHIPPER_CONTACT_EMAIL', content: shipperObj.contactObj[0].email },
+
     ];
 
     const to = parameters.managersEmailsTo.map((item) => ({ email: item }));
@@ -98,6 +141,10 @@ router.post('/create', auth(LEVELS.user), async (req, res) => {
       { name: 'POL', content: book.pol },
       { name: 'POD', content: book.pod },
       { name: 'USER_NAME', content: bookUser.name },
+      { name: 'TOTAL_PRICE', content: book.totalPrice },
+      { name: 'START_DATE', content: book.startDate },
+      { name: 'END_DATE', content: book.endDate },
+
     ];
     // console.log(paramsCustomer);
 
