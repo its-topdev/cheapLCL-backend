@@ -255,7 +255,7 @@ router.get('/search', auth(LEVELS.user), async (req, res) => {
     const isValidPortServices = (voyageSchedule) => {
       return voyageSchedule.every((entry) => {
         const prefix = entry.service_dsc?.slice(0, 5);
-        return prefix === 'FMX -' || prefix === 'IMX -';
+        return prefix === 'FMX -';
       });
     };
 
