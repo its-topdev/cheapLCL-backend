@@ -16,7 +16,7 @@ const allowedOrigins = [
   'https://cheap-lcl-frontend.vercel.app',
   'http://cheap-lcl-frontend.vercel.app',
   'http://localhost:5173',
-  'https://staging-cheaplcl-backend.onrender.com',
+  'https://staging-cheaplcl-backend-vcew.onrender.com',
 ];
 
 // Configure CORS middleware
