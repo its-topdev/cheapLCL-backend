@@ -16,7 +16,7 @@ const allowedOrigins = [
   'https://www.cheaplcl.com/',
   'http://www.cheaplcl.com/',
   'http://localhost:5173',
-  'production-cheaplcl-backend.onrender.com/',
+  'https://production-cheaplcl-backend.onrender.com/',
 ];
 
 // Configure CORS middleware
