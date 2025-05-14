@@ -13,12 +13,12 @@ const { sequelize } = require('./models');
 const app = express();
 const port = process.env.PORT || 3001;
 const allowedOrigins = [
-  'https://www.cheaplcl.com/',
-  'http://www.cheaplcl.com/',
-  'http://cheaplcl.com/',
-  'https://cheaplcl.com/',
+  'https://www.cheaplcl.com',
+  'http://www.cheaplcl.com',
+  'http://cheaplcl.com',
+  'https://cheaplcl.com',
   'http://localhost:5173',
-  'https://production-cheaplcl-backend.onrender.com/',
+  'https://production-cheaplcl-backend.onrender.com',
 ];
 
 // Configure CORS middleware
