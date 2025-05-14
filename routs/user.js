@@ -60,8 +60,7 @@ router.post('/:id/update-status', auth(LEVELS.admin), async (req, res) => {
     }
     userObj.user_status = status;
     await userObj.save();
-    const token = await userObj.createToken();
-    const url = `${parameters.frontUrl + parameters.resetPass}?token=${token}`;
+    const url = `${parameters.frontUrl + parameters.forgotPass}`;
     if (status == user_status.CONFIRMED) {
       const params = [
         { name: 'LINK', content: url },
@@ -245,6 +244,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
+
   const u = await user.findOne({
     where: {
       email,
