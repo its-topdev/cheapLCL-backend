@@ -12,6 +12,25 @@ const { sequelize } = require('./models');
 
 const app = express();
 const port = process.env.PORT || 3001;
+// const allowedOrigins = [
+//   'https://www.cheaplcl.com/',
+//   'http://www.cheaplcl.com/',
+//   'http://localhost:5173',
+//   'https://staging-cheaplcl-backend-9hqp.onrender.com',
+// ];
+
+// // Configure CORS middleware
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true); // Allow the request
+//     } else {
+//       callback(new Error('Not allowed by CORS')); // Block the request
+//     }
+//   },
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed HTTP methods
+//   credentials: true, // Allow cookies and credentials
+// }));
 const allowedOrigins = [
   'https://www.cheaplcl.com/',
   'http://www.cheaplcl.com/',
@@ -19,51 +38,32 @@ const allowedOrigins = [
   'https://staging-cheaplcl-backend-9hqp.onrender.com',
 ];
 
-// Configure CORS middleware
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true); // Allow the request
-    } else {
-      callback(new Error('Not allowed by CORS')); // Block the request
+const corsOptions = {
+  origin(origin, callback) {
+    if (!origin) {
+      return callback(null, true);
     }
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    console.log('Blocked origin:', origin);
+    return callback(new Error('Not allowed by CORS'));
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed HTTP methods
-  credentials: true, // Allow cookies and credentials
-}));
-// const allowedOrigins = [
-//   'https://cheap-lc-l-frontend.vercel.app',
-//   'http://cheap-lc-l-frontend.vercel.app',
-//   'http://localhost:5173',
-//   'https://staging-cheaplcl-backend.onrender.com',
-// ];
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'x-api-key',
+  ],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  maxAge: 86400,
+};
 
-// const corsOptions = {
-//   origin(origin, callback) {
-//     if (!origin) {
-//       return callback(null, true);
-//     }
-
-//     if (allowedOrigins.indexOf(origin) !== -1) {
-//       return callback(null, true);
-//     }
-//     console.log('Blocked origin:', origin);
-//     return callback(new Error('Not allowed by CORS'));
-//   },
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//   allowedHeaders: [
-//     'Content-Type',
-//     'Authorization',
-//     'X-Requested-With',
-//     'x-api-key',
-//   ],
-//   credentials: true,
-//   preflightContinue: false,
-//   optionsSuccessStatus: 204,
-//   maxAge: 86400,
-// };
-
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
