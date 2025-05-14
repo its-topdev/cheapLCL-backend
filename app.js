@@ -84,7 +84,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.options('*', cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 routeInit(app);
 
