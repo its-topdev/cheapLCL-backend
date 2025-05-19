@@ -13,10 +13,10 @@ const { sequelize } = require('./models');
 const app = express();
 const port = process.env.PORT || 3001;
 const allowedOrigins = [
-  'https://www.cheaplcl.com',
-  'http://www.cheaplcl.com',
-  'http://cheaplcl.com',
-  'https://cheaplcl.com',
+  'https://www.cheaplclfrontend.com',
+  'http://www.cheaplclfrontend.com',
+  'http://cheaplclfrontend.com',
+  'https://cheaplclfrontend.com',
   'http://localhost:5173',
   'https://cheap-lcl-backend.onrender.com',
 ];
