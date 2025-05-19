@@ -126,12 +126,15 @@ router.post('/create', auth(LEVELS.user), async (req, res) => {
     const to = parameters.managersEmailsTo.map((item) => ({ email: item }));
     // const to = [{ email }];
     // const to = bookUser.email;
-    const response = sendEmail(
-      templates.new_book_referant,
-      to,
-      'NEW BOOKING REQUEST',
-      params,
-    );
+    if (book.pol === 'Shanghai') {
+      to.push({ email: 'cherry_sh@wlog-group.com' });
+    }
+    else if (book.pol === 'Nansha') {
+      to.push({ email: 'szop7@wlog-group.com' });
+    }
+    else if (book.pol === 'Qingdao') {
+      to.push({ email: 'qdo3@wlog-group.com' });
+    }
 
     // send email to customer
     const weightOrCbm =

@@ -7,14 +7,29 @@ const { LEVELS } = require('../constants/user-role');
 
 router.get('/user-shippers', auth(LEVELS.user), async (req, res) => {
   try {
-    const list = await shipper.findAll({
+    const currentUser = await user.findOne({
       where: {
-        userId: req.userId,
+        id: req.userId,
       },
     });
+    const currentUserCompany = currentUser ? currentUser.company : null;
+
+    const list = await shipper.findAll({
+      include: [
+        {
+          model: user,
+          as: 'userObj',
+        },
+      ],
+    });
+
+    const filteredList = list.filter(
+      (item) => item.userObj && item.userObj.company === currentUserCompany,
+    );
+
     return res.json({
       status: true,
-      data: { shippers: list },
+      data: { shippers: filteredList },
     });
   } catch (err) {
     console.log(err);
@@ -119,11 +134,19 @@ router.get('/list', auth(LEVELS.user), async (req, res) => {
       ],
       order: [['id', 'DESC']],
     });
+
+    const currentUser = await user.findOne({
+      where: {
+        id: req.userId,
+      },
+    });
+    const currentUserCompany = currentUser ? currentUser.company : null;
+
     let filteredList = list.filter((item) => item.shipperObj !== null);
     filteredList = filteredList.filter((item) => item.shipperObj.userObj !== null);
     if (req.query.list_type === 'shippers') {
       filteredList = filteredList.filter(
-        (item) => item.shipperObj.userObj.id === req.userId,
+        (item) => item.shipperObj.userObj.company === currentUserCompany,
       );
     }
     const total = filteredList.length;

@@ -60,7 +60,7 @@ router.post('/:id/update-status', auth(LEVELS.admin), async (req, res) => {
     }
     userObj.user_status = status;
     await userObj.save();
-    const url = `${parameters.frontUrl + parameters.forgotPass}`;
+    const url = `${parameters.frontUrl + parameters.setPass}`;
     if (status == user_status.CONFIRMED) {
       const params = [
         { name: 'LINK', content: url },
